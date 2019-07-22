@@ -16,16 +16,31 @@ namespace Task.Models
         public DateTime? DataExclusao { get; set; }
 
         [NotMapped]
-        public Status Status
+        public string Concluido { get; set; }
+
+        [NotMapped]
+        public bool StatusConcluido
+        {
+            get
+            {
+                if (this.DataConclusao == null)
+                    return false;
+                else
+                    return true;
+            }
+        }
+
+        [NotMapped]
+        public string Status
         {
             get
             {
                 if (DataConclusao != null)
-                    return Status.Completa;
+                    return "Concluída";
                 else if (DataExclusao != null)
-                    return Status.Deletada;
+                    return "Deletada";
                 else
-                    return Status.Aberta;
+                    return "Aberta";
             }
         }
     }

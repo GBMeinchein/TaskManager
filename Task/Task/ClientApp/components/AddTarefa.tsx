@@ -12,21 +12,21 @@ export class AddTarefa extends React.Component<RouteComponentProps<{}>, AddTaref
         super(props);
 
         this.state = { title: "", loading: true, empData: new TarefaData };
-
-        //fetch('api/Employee/GetCityList')
-        //    .then(response => response.json() as Promise<Array<any>>)
+        
         var empid = this.props.match.params["id"];
         // This will set state for Edit employee  
         if (empid > 0) {
             fetch('api/Tarefas/' + empid)
                 .then(response => response.json() as Promise<TarefaData>)
                 .then(data => {
-                    this.setState({ title: "Edit", loading: false, empData: data });
+                    this.setState({ title: "Editar", loading: false, empData: data });
                 });
+            if (this.state.empData.dataconclusao == null)
+                this.handleSave = this.handleSave.bind(this);
         }
         // This will set state for Add employee  
         else {
-            this.state = { title: "Create", loading: false, empData: new TarefaData };
+            this.state = { title: "Adicionar", loading: false, empData: new TarefaData };
         }
         // This binding is necessary to make "this" work in the callback  
         this.handleSave = this.handleSave.bind(this);
@@ -72,6 +72,7 @@ export class AddTarefa extends React.Component<RouteComponentProps<{}>, AddTaref
         e.preventDefault();
         this.props.history.push("/listartarefas");
     }
+
     // Returns the HTML Form to the render() method.  
     private renderCreateForm() {
         return (
@@ -91,9 +92,13 @@ export class AddTarefa extends React.Component<RouteComponentProps<{}>, AddTaref
                         <input className="form-control" type="text" name="Descricao" defaultValue={this.state.empData.descricao} required />
                     </div>
                 </div>
- 
-         
-
+                <div className="form-group">
+                    <label>
+                        Concluído
+                        <input className="form-control" type="checkbox" name="Concluido" defaultChecked={this.state.empData.statusConcluido} />
+                    
+                    </label>
+                </div>
                 <div className="form-group">
                     <button type="submit" className="btn btn-default">Save</button>
                     <button className="btn" onClick={this.handleCancel}>Cancel</button>

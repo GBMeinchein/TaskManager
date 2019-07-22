@@ -23,14 +23,14 @@ namespace Task.Controllers
         [Route("api/Tarefas/Index")]
         public IEnumerable<Tarefas> Index()
         {
-            return _context.Tarefas;
+            return _context.Tarefas.Where(o => o.DataExclusao == null);
         }
 
         // GET: api/Tarefas
         [HttpGet]
         public IEnumerable<Tarefas> GetTarefas()
         {
-            return _context.Tarefas;
+            return _context.Tarefas.Where(o => o.DataExclusao == null);
         }
 
         // GET: api/Tarefas/5
@@ -66,6 +66,13 @@ namespace Task.Controllers
                 return BadRequest();
             }
 
+            if (tarefas.Concluido == "on")
+                tarefas.DataConclusao = DateTime.Now;
+            else
+                tarefas.DataConclusao = null;
+
+            tarefas.DataEdicao = DateTime.Now;
+
             _context.Entry(tarefas).State = EntityState.Modified;
 
             try
@@ -96,6 +103,11 @@ namespace Task.Controllers
                 return BadRequest(ModelState);
             }
 
+            if (tarefas.Concluido == "on")
+                tarefas.DataConclusao = DateTime.Now;
+
+            tarefas.DataCriacao = DateTime.Now;
+
             _context.Tarefas.Add(tarefas);
             await _context.SaveChangesAsync();
 
@@ -117,8 +129,25 @@ namespace Task.Controllers
                 return NotFound();
             }
 
-            _context.Tarefas.Remove(tarefas);
-            await _context.SaveChangesAsync();
+            tarefas.DataExclusao = DateTime.Now;
+
+            _context.Entry(tarefas).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TarefasExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             return Ok(tarefas);
         }

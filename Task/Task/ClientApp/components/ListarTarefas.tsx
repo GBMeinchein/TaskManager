@@ -24,9 +24,8 @@ export class ListarTarefas extends React.Component<RouteComponentProps<{}>, List
             : this.renderTarefaTable(this.state.tarefaLista);
         return <div>
             <h1>Tarefas</h1>
-            <p>Dados dos tarefas obtidos do servidor.</p>
             <p>
-                <Link to="/addtarefa">Criar Novo</Link>
+                <Link to="/addtarefa">Criar Nova</Link>
             </p>
             {contents}
         </div>;
@@ -36,7 +35,7 @@ export class ListarTarefas extends React.Component<RouteComponentProps<{}>, List
         if (!confirm("Deseja deletar o tarefa com id : " + id))
             return;
         else {
-            fetch('api/Tarefas/Delete/' + id, {
+            fetch('api/Tarefas/' + id, {
                 method: 'delete'
             }).then(data => {
                 this.setState(
@@ -59,7 +58,7 @@ export class ListarTarefas extends React.Component<RouteComponentProps<{}>, List
                     <th></th>
                     <th>Título</th>
                     <th>Descrição</th>
-                    <th>Concluído</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -68,7 +67,7 @@ export class ListarTarefas extends React.Component<RouteComponentProps<{}>, List
                         <td></td>
                         <td>{emp.titulo}</td>
                         <td>{emp.descricao}</td>
-                        <td>{emp.dataconclusao}</td>
+                        <td>{emp.status}</td>
                         <td>
                             <a className="action" onClick={(id) => this.handleEdit(emp.id)}>Editar</a>  |
                                 <a className="action" onClick={(id) => this.handleDelete(emp.id)}>Deletar</a>
@@ -83,8 +82,10 @@ export class TarefaData {
     id: number = 0;
     titulo: string = "";
     descricao: string = "";
+    status: string = "";
     datacriacao: string = "";
     dataedicao: string = "";
     dataconclusao: string = "";
     dataexclusao: string = "";
+    statusConcluido: boolean = false;
 }    
