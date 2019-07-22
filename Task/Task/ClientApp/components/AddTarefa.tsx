@@ -14,21 +14,16 @@ export class AddTarefa extends React.Component<RouteComponentProps<{}>, AddTaref
         this.state = { title: "", loading: true, empData: new TarefaData };
         
         var empid = this.props.match.params["id"];
-        // This will set state for Edit employee  
         if (empid > 0) {
             fetch('api/Tarefas/' + empid)
                 .then(response => response.json() as Promise<TarefaData>)
                 .then(data => {
                     this.setState({ title: "Editar", loading: false, empData: data });
                 });
-            if (this.state.empData.dataconclusao == null)
-                this.handleSave = this.handleSave.bind(this);
         }
-        // This will set state for Add employee  
         else {
             this.state = { title: "Adicionar", loading: false, empData: new TarefaData };
         }
-        // This binding is necessary to make "this" work in the callback  
         this.handleSave = this.handleSave.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
     }
@@ -43,11 +38,9 @@ export class AddTarefa extends React.Component<RouteComponentProps<{}>, AddTaref
             {contents}
         </div>;
     }
-    // This will handle the submit form event.  
     private handleSave(event) {
         event.preventDefault();
         const data = new FormData(event.target);
-        // PUT request for Edit employee.  
         if (this.state.empData.id) {
             fetch('api/Tarefas/' + this.state.empData.id, {
                 method: 'PUT',
@@ -56,7 +49,6 @@ export class AddTarefa extends React.Component<RouteComponentProps<{}>, AddTaref
                 this.props.history.push("/listartarefas");
                 })
         }
-        // POST request for Add employee.  
         else {
             fetch('api/Tarefas', {
                 method: 'POST',
@@ -67,13 +59,13 @@ export class AddTarefa extends React.Component<RouteComponentProps<{}>, AddTaref
                 })
         }
     }
-    // This will handle Cancel button click event.  
+    
     private handleCancel(e) {
         e.preventDefault();
         this.props.history.push("/listartarefas");
     }
 
-    // Returns the HTML Form to the render() method.  
+
     private renderCreateForm() {
         return (
             <form onSubmit={this.handleSave} >

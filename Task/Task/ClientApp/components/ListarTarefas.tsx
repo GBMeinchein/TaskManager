@@ -14,7 +14,6 @@ export class ListarTarefas extends React.Component<RouteComponentProps<{}>, List
             .then(data => {
                 this.setState({ tarefaLista: data, carregando: false });
             });
-        // este binding é necessário para que o 'this' funcione no callback  
         this.handleDelete = this.handleDelete.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
     }
@@ -30,7 +29,7 @@ export class ListarTarefas extends React.Component<RouteComponentProps<{}>, List
             {contents}
         </div>;
     }
-    // Trata a solicitação Delete  para um tarefa  
+
     private handleDelete(id: number) {
         if (!confirm("Deseja deletar o tarefa com id : " + id))
             return;
